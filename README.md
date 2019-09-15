@@ -1,29 +1,11 @@
-# Create React Express App
+# Books Search
+UW-Extension Coding Boot Camp Week 20 Homework
 
-## About This Boilerplate
+Purpose: Make Single Page React Application with `react-router-dom` for routing. Also use some Node, Express and MongoDB. Main purpose: To stop hating React.
 
-This setup allows for a Node/Express/React app which can be easily deployed to Heroku.
+How to use it:
 
-The front-end React app will auto-reload as it's updated via webpack dev server, and the backend Express app will auto-reload independently with nodemon.
+Search for Books (using Google Books API). Save the ones you like. See saved books. Delete some for no reason.
 
-## Starting the app locally
+Here is link to Heroku:
 
-Start by installing front and backend dependencies. While in this directory, run the following command:
-
-```
-npm install
-```
-
-This should install node modules within the server and the client folder.
-
-After both installations complete, run the following command in your terminal:
-
-```
-npm start
-```
-
-Your app should now be running on <http://localhost:3000>. The Express server should intercept any AJAX requests from the client.
-
-## Deployment (Heroku)
-
-To deploy, simply add and commit your changes, and push to Heroku. As is, the NPM scripts should take care of the rest.

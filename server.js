@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const PORT = process.env.PORT || 3001;
 const app = express();
+const db = require("./models");
 const mongoose = require("mongoose");
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/googlebooks";
 
@@ -22,7 +23,7 @@ app.get("/api/books", (req, res) => {
   });
 })
 
-app.post("/books/:id", function(req, res) {
+app.post("/api/books/:id", function(req, res) {
   db.Book.create(req.body)
   .then(function(dbBook) {
     res.json(dbBook);

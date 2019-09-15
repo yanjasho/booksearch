@@ -1,17 +1,20 @@
 import React, { Component } from "react";
-import ReactDOM from 'react-dom';
-import DeleteBtn from "../components/DeleteBtn";
+import SaveBtn from "../components/SaveBtn";
 import Jumbotron from "../components/Jumbotron";
-import { Link } from "react-router-dom";
 import { Col, Row, Container } from "../components/Grid";
 import { List, ListItem } from "../components/List";
-import { Input, TextArea, FormBtn } from "../components/Form";
+import { Input, FormBtn } from "../components/Form";
 import API from "../utils/API";
+import PoweredByGoogle from "../components/PoweredByGoogle"
+import Alert from "../components/Alert"
+import DeleteBtn from "../components/DeleteBtn";
 
 class Search extends Component {
+    
     state = {
       books: [],
-      search: ""
+      search: "",
+      alert: false
     };
 
     handleInputChange = event => {
@@ -22,13 +25,20 @@ class Search extends Component {
     };
 
     handleFormSubmit = event => {
-        event.preventDefault();
-        API.getBooksGoogle(this.state.search)
-        .then(res=>{
-            console.log(res.data.items)
-            this.setState({ books: res.data.items, search: ""})
-        })
-        .catch(err => console.log(err));
+      event.preventDefault();
+      API.getBooksGoogle(this.state.search)
+      .then(res=>{
+          this.setState({ books: res.data.items, search: "", alert: false})
+      })
+      .catch(err => console.log(err));
+    };
+
+    saveBook = bookData => {
+      API.saveBook(bookData)
+      .then(res => {
+        this.setState({alert: true})
+      })
+      .catch(err => console.log(err));
     };
 
     render() {
@@ -37,8 +47,12 @@ class Search extends Component {
             <Row>
               <Col size="md-6">
                 <Jumbotron>
-                  <h1>Search for books</h1>
+                  <h1>Search Books</h1>
                 </Jumbotron>
+                <Alert style={{ opacity: this.state.alert ? 1 : 0 }} type="success" >
+                  Book Saved
+                  <DeleteBtn onClick={() => this.setState({alert: false})} />
+                </Alert>
                 <form>
                   <Input
                     value={this.state.search}
@@ -49,26 +63,28 @@ class Search extends Component {
                   <FormBtn disabled={!(this.state.search)}onClick={this.handleFormSubmit}>
                     Search
                   </FormBtn>
+                  <PoweredByGoogle />
                 </form>
               </Col>
               <Col size="md-6 sm-12">
                 <Jumbotron>
-                  <h1>Search result</h1>
+                  <h1>Google Books search results</h1>
                 </Jumbotron>
                 {this.state.books.length ? (
                   <List>
                     {this.state.books.map(book => (
                       <ListItem key={book.id}>
                             <div>
-                                <strong>
-                                    {book.volumeInfo.title} by {book.volumeInfo.authors}
-                                <br />
-                                <a href={book.volumeInfo.infoLink}>View</a>
-                                <br />
-                                <img src={book.volumeInfo.imageLinks.smallThumbnail} alt="Book" />
-                                </strong>
+                              <strong>
+                                  {book.volumeInfo.title} by {book.volumeInfo.authors}
+                              <br />
+                              </strong>
+                              <a href={book.volumeInfo.infoLink}>View</a>
+                              <p>{book.volumeInfo.description}</p>
+                              <br />
+                              <img src={book.volumeInfo.imageLinks.smallThumbnail} alt="Book" />
                             </div>
-                        <DeleteBtn onClick={() => this.deleteBook(book._id)} />
+                        <SaveBtn onClick={() => this.saveBook(book.volumeInfo)} />
                       </ListItem>
                     ))}
                   </List>
@@ -81,4 +97,5 @@ class Search extends Component {
         )
     }
 }
+
 export default Search;
